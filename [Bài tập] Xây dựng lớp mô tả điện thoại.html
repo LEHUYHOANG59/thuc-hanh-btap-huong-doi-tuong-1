@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Simulation</title>
+</head>
+<body>
+<h1>Mobile Simulation</h1>
+<script>
+  class Mobile {
+    constructor(name) {
+      this.name = name;
+      this.battery = 100;
+      this.isOn = false;
+      this.draftMessage = "";
+      this.inbox = [];
+      this.sentMessages = [];
+    }
+
+    checkPowerStatus() {
+      return this.isOn;
+    }
+
+    turnOn() {
+      this.isOn = true;
+      console.log(`${this.name} is now ON.`);
+    }
+
+    turnOff() {
+      this.isOn = false;
+      console.log(`${this.name} is now OFF.`);
+    }
+
+    chargeBattery() {
+      this.battery = 100;
+      console.log(`${this.name} is fully charged.`);
+    }
+
+    useBattery() {
+      if (this.battery > 0) {
+        this.battery--;
+      }
+      if (this.battery === 0) {
+        this.turnOff();
+        console.log(`${this.name} ran out of battery and turned off.`);
+      }
+    }
+
+    composeMessage(message) {
+      if (!this.checkPowerStatus()) {
+        console.log(`${this.name} is OFF. Cannot compose a message.`);
+        return;
+      }
+      this.draftMessage = message;
+      this.useBattery();
+      console.log(`${this.name} composed a message: "${message}"`);
+    }
+
+    sendMessage(receiver) {
+      if (!this.checkPowerStatus()) {
+        console.log(`${this.name} is OFF. Cannot send a message.`);
+        return;
+      }
+      if (!this.draftMessage) {
+        console.log(`${this.name} has no message to send.`);
+        return;
+      }
+      receiver.receiveMessage(this.draftMessage);
+      this.sentMessages.push(this.draftMessage);
+      console.log(`${this.name} sent a message: "${this.draftMessage}" to ${receiver.name}`);
+      this.draftMessage = "";
+      this.useBattery();
+    }
+
+    receiveMessage(message) {
+      if (!this.checkPowerStatus()) {
+        console.log(`${this.name} is OFF. Cannot receive a message.`);
+        return;
+      }
+      this.inbox.push(message);
+      console.log(`${this.name} received a message: "${message}"`);
+      this.useBattery();
+    }
+
+    viewInbox() {
+      if (!this.checkPowerStatus()) {
+        console.log(`${this.name} is OFF. Cannot view inbox.`);
+        return;
+      }
+      console.log(`${this.name}'s Inbox:`);
+      console.log(this.inbox);
+      this.useBattery();
+    }
+
+    viewSentMessages() {
+      if (!this.checkPowerStatus()) {
+        console.log(`${this.name} is OFF. Cannot view sent messages.`);
+        return;
+      }
+      console.log(`${this.name}'s Sent Messages:`);
+      console.log(this.sentMessages);
+      this.useBattery();
+    }
+  }
+
+  // Create mobile objects
+  const nokia = new Mobile("Nokia");
+  const iphone = new Mobile("iPhone");
+
+  // Turn on both phones
+  nokia.turnOn();
+  iphone.turnOn();
+
+  // Nokia composes and sends a message to iPhone
+  nokia.composeMessage("Hello from Nokia!");
+  nokia.sendMessage(iphone);
+
+  // iPhone views the inbox
+  iphone.viewInbox();
+</script>
+</body>
+</html>
